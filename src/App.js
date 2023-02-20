@@ -1,32 +1,28 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
+import getGifs from './services/getGifs';
 
-const keyword = 'valorant';
-const apiURL = `https://api.giphy.com/v1/gifs/search?api_key=dIJrma20pSU6ymMwWnDbiaT7NFHeAGVa&q=${keyword}&limit=10&offset=0&rating=G&lang=en`;
 
 function App() {
-
+  
   const [gifs, setGifs] = useState([])
 
   useEffect(() => {
-    fetch(apiURL)
-    .then(res => res.json())
-    .then(response => {
-      const {data = []} = response
-      if (Array.isArray(data)) {
-        const gifs = data.map(image => image.images.downsized_medium.url)
-        setGifs(gifs)
-      }
-    })
+    getGifs({ keyword: 'the last of us'}).then(gifs => setGifs(gifs))
   }, [])
   
   return (
     <div className="App">
       <section className="App-content">
         {
-    
-          gifs.map(singleGif => <img src={singleGif} />)
-        }
+          gifs.map(singleGif => {
+            return <div>
+              <small>{ singleGif.id }</small>
+              <h4>{ singleGif.title }</h4>
+              <img alt={singleGif.title} src={singleGif.url} />
+          </div>
+        })
+      }
       </section>
     </div>
   );
